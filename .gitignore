@@ -39,6 +39,6 @@ yarn-error.log*
 
 # docs and data
 .docs
-.v1-app-updates-vercel-ai-sdk
+v1-app-updates-vercel-ai-sdk/
 docs/
-.data
+data/
