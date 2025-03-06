@@ -1,10 +1,10 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 15 App Router-React 19 AI." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Next.js 15 AI</h1>
+<a href="https://trainnect.com/">
+  <img alt="Next.js 15, App Router, React 19, AI SDK." src="public/images/technical-course-header.jpg">
+  <h1 align="center">Next.js 15 - React 19 AI</h1>
 </a>
 
 <p align="center">
-  An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.
+  An Technical Course Creator AI Built With Next.js, React and Vercel AI.
 </p>
 
 <p align="center">
