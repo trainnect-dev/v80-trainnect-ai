@@ -1,0 +1,22 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "id": "0005_add_technical_course_kind",
+  "name": "add_technical_course_kind",
+  "statements": [
+    {
+      "type": "alter_table",
+      "name": "Document",
+      "columns": {
+        "text": {
+          "name": "text",
+          "type": "varchar",
+          "nullable": false,
+          "default": "'text'",
+          "primaryKey": false,
+          "autoincrement": false
+        }
+      }
+    }
+  ]
+}

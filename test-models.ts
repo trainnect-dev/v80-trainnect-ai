@@ -1,11 +1,17 @@
 import { myProvider } from './lib/ai/models';
 import { generateText } from 'ai';
+import { config } from 'dotenv';
+
+// Load environment variables from .env.local
+config({
+  path: '.env.local',
+});
 
 async function testModels() {
   try {
     console.log("Testing OpenAI model (o3-mini)...");
     const openaiResult = await generateText({
-      model: myProvider.languageModel("chat-model-small"),
+      model: myProvider.languageModel("chat-model-openai"),
       prompt: "Hello, how are you?",
     });
     console.log("OpenAI result:", openaiResult.text);
@@ -13,7 +19,7 @@ async function testModels() {
     
     console.log("\nTesting Google model (gemini-2.0-flash)...");
     const googleResult = await generateText({
-      model: myProvider.languageModel("chat-model-medium"),
+      model: myProvider.languageModel("chat-model-gemini"),
       prompt: "Hello, how are you?",
     });
     console.log("Google result:", googleResult.text);
@@ -21,7 +27,7 @@ async function testModels() {
     
     console.log("\nTesting Anthropic model (claude-3-7-sonnet-20250219)...");
     const anthropicResult = await generateText({
-      model: myProvider.languageModel("chat-model-large"),
+      model: myProvider.languageModel("chat-model-claude"),
       prompt: "Hello, how are you?",
       providerOptions: {
         anthropic: {

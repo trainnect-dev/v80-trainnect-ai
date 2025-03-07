@@ -14,9 +14,9 @@ export const myProvider = customProvider({
   languageModels: {
     "chat-model-openai": openai("o3-mini"),
     "chat-model-gemini": google("gemini-2.0-flash"),
-    "chat-model-anthropic": anthropic("claude-3-7-sonnet-20250219"),
+    "chat-model-claude": anthropic("claude-3-7-sonnet-20250219"),
     "chat-model-reasoning": wrapLanguageModel({
-      model: openrouter("deepseek/deepseek-r1-distill-llama-70b"),
+      model: openrouter("google/gemini-2.0-flash-thinking-exp:free"),
       //model: openrouter("google/gemini-2.0-flash-thinking-exp:free"),
       //model: openrouter("deepseek/deepseek-r1-distill-llama-70b"),
       //model: openrouter("microsoft/phi-4"),
@@ -56,6 +56,6 @@ export const chatModels: Array<ChatModel> = [
   {
     id: 'chat-model-reasoning',
     name: 'Openrouter reasoning',
-    description: 'deepseek-r1-distill-llama-70b',
+    description: 'google/gemini-2.0-flash-thinking-exp:free',
   },
 ];

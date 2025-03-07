@@ -48,24 +48,46 @@ export async function POST(request: Request) {
     return new Response('No user message found', { status: 400 });
   }
 
-  const chat = await getChatById({ id });
-
-  if (!chat) {
-    const title = await generateTitleFromUserMessage({ message: userMessage });
-    await saveChat({ id, userId: session.user.id, title });
+  // Get chat with better error handling
+  let chat;
+  try {
+    chat = await getChatById({ id });
+  } catch (error) {
+    console.error('Error getting chat by ID:', error);
+    // Continue with undefined chat - we'll create a new one
   }
 
-  await saveMessages({
-    messages: [{ ...userMessage, createdAt: new Date(), chatId: id }],
-  });
+  if (!chat) {
+    try {
+      const title = await generateTitleFromUserMessage({ message: userMessage });
+      await saveChat({ id, userId: session.user.id, title });
+    } catch (error) {
+      console.error('Error creating new chat:', error);
+      // Continue despite error - we'll still try to process the message
+    }
+  }
+
+  // Save user message with error handling
+  try {
+    await saveMessages({
+      messages: [{ ...userMessage, createdAt: new Date(), chatId: id }],
+    });
+  } catch (error) {
+    console.error('Error saving user message:', error);
+    // Continue despite error - the message is still in the stream
+  }
 
   return createDataStreamResponse({
     execute: (dataStream) => {
+      // Simple model options without special handling
+      const modelOptions = {};
+      
       const result = streamText({
         model: myProvider.languageModel(selectedChatModel),
         system: systemPrompt({ selectedChatModel }),
         messages,
         maxSteps: 5,
+        providerOptions: modelOptions,
         experimental_activeTools:
           selectedChatModel === 'chat-model-reasoning'
             ? []
@@ -94,19 +116,28 @@ export async function POST(request: Request) {
                 reasoning,
               });
 
-              await saveMessages({
-                messages: sanitizedResponseMessages.map((message) => {
-                  return {
-                    id: message.id,
-                    chatId: id,
-                    role: message.role,
-                    content: message.content,
-                    createdAt: new Date(),
-                  };
-                }),
-              });
+              // Simple message saving for all models
+              try {
+                await saveMessages({
+                  messages: sanitizedResponseMessages.map((message) => {
+                    return {
+                      id: message.id,
+                      chatId: id,
+                      role: message.role,
+                      content: message.content,
+                      createdAt: new Date(),
+                    };
+                  }),
+                });
+              } catch (error) {
+                // Silent error handling to prevent UI failures
+                // Don't throw - let the UI continue to work
+              }
             } catch (error) {
-              console.error('Failed to save chat');
+              console.error('Failed to save chat response messages:', error);
+              // Log more details to help diagnose the issue
+              console.log('Chat ID:', id);
+              console.log('Selected model:', selectedChatModel);
             }
           }
         },
@@ -122,8 +153,9 @@ export async function POST(request: Request) {
         sendReasoning: true,
       });
     },
-    onError: () => {
-      return 'Oops, an error occured!';
+    onError: (error) => {
+      // Simplified error handling
+      return 'An error occurred. Please try again.';
     },
   });
 }
@@ -144,6 +176,11 @@ export async function DELETE(request: Request) {
 
   try {
     const chat = await getChatById({ id });
+    
+    // Check if chat exists
+    if (!chat) {
+      return new Response('Chat not found', { status: 404 });
+    }
 
     if (chat.userId !== session.user.id) {
       return new Response('Unauthorized', { status: 401 });

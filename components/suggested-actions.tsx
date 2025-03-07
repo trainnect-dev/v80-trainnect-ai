@@ -31,9 +31,9 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
       action: `Create a New Technical Course Outline`,
     },
     {
-      title: 'Q & A',
-      label: 'PDF document',
-      action: 'Answer Questions about PDF document',
+      title: 'Deep Research',
+      label: 'on a given topic',
+      action: 'Research, analyze and provide a comprehensive analysis',
     },
   ];
 
